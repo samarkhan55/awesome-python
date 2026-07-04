@@ -1,0 +1,68 @@
+CREATE DATABASE construction_company;
+USE construction_company;
+
+CREATE TABLE clients (
+    client_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    contact_info VARCHAR(255)
+);
+
+CREATE TABLE projects (
+    project_id INT AUTO_INCREMENT PRIMARY KEY,
+    client_id INT,
+    name VARCHAR(100),
+    location VARCHAR(255),
+    start_date DATE,
+    end_date DATE,
+    status ENUM('planned','ongoing','completed','on_hold'),
+    FOREIGN KEY (client_id) REFERENCES clients(client_id)
+);
+
+CREATE TABLE employees (
+    employee_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    role VARCHAR(50),
+    skills TEXT
+);
+
+CREATE TABLE equipment (
+    equipment_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    type VARCHAR(50),
+    status ENUM('available','in_use','maintenance')
+);
+
+CREATE TABLE materials (
+    material_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    supplier VARCHAR(100),
+    stock_quantity INT
+);
+
+CREATE TABLE tasks (
+    task_id INT AUTO_INCREMENT PRIMARY KEY,
+    project_id INT,
+    description TEXT,
+    start_date DATE,
+    end_date DATE,
+    FOREIGN KEY (project_id) REFERENCES projects(project_id)
+);
+
+CREATE TABLE task_assignments (
+    assignment_id INT AUTO_INCREMENT PRIMARY KEY,
+    task_id INT,
+    employee_id INT,
+    equipment_id INT,
+    FOREIGN KEY (task_id) REFERENCES tasks(task_id),
+    FOREIGN KEY (employee_id) REFERENCES employees(employee_id),
+    FOREIGN KEY (equipment_id) REFERENCES equipment(equipment_id)
+);
+
+CREATE TABLE payments (
+    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+    project_id INT,
+    amount DECIMAL(10,2),
+    payment_date DATE,
+    method ENUM('cash','bank_transfer','check'),
+    FOREIGN KEY (project_id) REFERENCES projects(project_id)
+);
